@@ -57,12 +57,22 @@ app.delete("/user-delete/:id", (req, res) => {
 
 app.put("/user-update/:id", (req, res) => {
   const userID = req.params.id;
-  const { nama, tempat_lahir, tgl_lahir, instansi, email } = req.body;
+  const { nama, tempat_lahir, tgl_lahir, prodi, nim, no_telp, email } =
+    req.body;
 
   const sql =
-    "UPDATE users SET nama = ?, tempat_lahir = ?, tgl_lahir = ?, instansi = ?, email = ? WHERE id = ?";
+    "UPDATE users SET nama = ?, tempat_lahir = ?, tgl_lahir = ?, prodi = ?, nim = ?, no_telp = ?, email = ? WHERE id = ?";
 
-  const values = [nama, tempat_lahir, tgl_lahir, instansi, email, userID];
+  const values = [
+    nama,
+    tempat_lahir,
+    tgl_lahir,
+    prodi,
+    nim,
+    no_telp,
+    email,
+    userID,
+  ];
 
   db.query(sql, values, (err, result) => {
     if (err) {
@@ -80,7 +90,16 @@ app.put("/user-update/:id", (req, res) => {
 
 // AUTH
 app.post("/signup", (req, res) => {
-  const { name, email, password, instansi, tempat_lahir, tgl_lahir } = req.body;
+  const {
+    name,
+    email,
+    password,
+    prodi,
+    nim,
+    no_telp,
+    tempat_lahir,
+    tgl_lahir,
+  } = req.body;
 
   bcrypt.hash(password, 10, (err, hashedPassword) => {
     if (err) {
@@ -88,12 +107,14 @@ app.post("/signup", (req, res) => {
     }
 
     const sql =
-      "INSERT INTO users (nama, email, password, instansi, tempat_lahir, tgl_lahir) VALUES (?, ?, ?, ?, ?, ?)";
+      "INSERT INTO users (nama, email, password, prodi,nim, no_telp, tempat_lahir, tgl_lahir) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     const values = [
       name,
       email,
       hashedPassword,
-      instansi,
+      prodi,
+      nim,
+      no_telp,
       tempat_lahir,
       tgl_lahir,
     ];
@@ -299,6 +320,9 @@ app.post("/add-buku", (req, res) => {
     judul,
     penerbit,
     tahun_terbit,
+    isbn_issn,
+    jumlah_halaman,
+    deskripsi,
     tersedia,
     sumber,
     kode_barcode,
@@ -306,12 +330,15 @@ app.post("/add-buku", (req, res) => {
   } = req.body;
 
   const sql =
-    "INSERT INTO data_buku (pengarang, judul, penerbit, tahun_terbit,tersedia, sumber, kode_barcode, kode_rak) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
+    "INSERT INTO data_buku (pengarang, judul, penerbit, tahun_terbit, isbn_issn, jumlah_halaman, deskripsi, tersedia, sumber, kode_barcode, kode_rak) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
   const values = [
     pengarang,
     judul,
     penerbit,
     tahun_terbit,
+    isbn_issn,
+    jumlah_halaman,
+    deskripsi,
     tersedia,
     sumber,
     kode_barcode,
@@ -324,7 +351,7 @@ app.post("/add-buku", (req, res) => {
       return res.status(500).json({ error: "Internal server error" });
     }
 
-    return res.status(201).json({ message: "Transaction added successfully" });
+    return res.status(201).json({ message: "Book added successfully" });
   });
 });
 
@@ -353,18 +380,24 @@ app.put("/update-buku/:id", (req, res) => {
     judul,
     penerbit,
     tahun_terbit,
+    isbn_issn,
+    jumlah_halaman,
+    deskripsi,
     sumber,
     kode_barcode,
     kode_rak,
   } = req.body;
 
   const sql =
-    "UPDATE data_buku SET pengarang = ?, judul = ?, penerbit = ?, tahun_terbit = ?, sumber = ?, kode_barcode = ?, kode_rak = ? WHERE kode_barcode = ?";
+    "UPDATE data_buku SET pengarang = ?, judul = ?, penerbit = ?, tahun_terbit = ?, isbn_issn = ?, jumlah_halaman = ?, deskripsi = ?, sumber = ?, kode_barcode = ?, kode_rak = ? WHERE kode_barcode = ?";
   const values = [
     pengarang,
     judul,
     penerbit,
     tahun_terbit,
+    isbn_issn,
+    jumlah_halaman,
+    deskripsi,
     sumber,
     kode_barcode,
     kode_rak,
